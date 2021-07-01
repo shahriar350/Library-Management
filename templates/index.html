@@ -1,9 +1,20 @@
-{% extends 'master.html' %}
+{% extends 'MasterAdmin.html' %}
 
 {% block head %}
-<title>Library management</title>
+    <title>Library management</title>
 {% endblock %}
 
-{% block body %}
-hello this is library management.
+{% block content %}
+
+     <h1 class="mt-4">Simple Sidebar</h1>
+        <i data-feather="align-justify" stroke-width="1" color="red" width="36" height="36"></i>
+
+                    <p>The starting state of the menu will appear collapsed on smaller screens, and will appear non-collapsed on larger screens. When toggled using the button below, the menu will change.</p>
+                    <p>
+                        Make sure to keep all page content within the
+                        <code>#page-content-wrapper</code>
+                        . The top navbar is optional, and just for demonstration. Just create an element with the
+                        <code>#sidebarToggle</code>
+                        ID which will toggle the menu when clicked.
+                    </p>
 {% endblock %}
