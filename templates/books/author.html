@@ -9,41 +9,27 @@
         {% load crispy_forms_tags %}
         <div class="row">
             <div class="col-md-6 col-12">
-                <div class="row">
-                    <div class="col-12 my-5">
-                        <div class="d-flex justify-content-between">
-                            <select name="" id="">
-                                <option value=""></option>
-                            </select>
-                            <input v-model="searchQuery" type="text" placeholder="Search book"
-                                   class="form-control">
-                        </div>
-                        <div class="card" v-if="filter_books.length">
-                            <div class="card-body">
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <h4>Books:</h4>
                 {#                vue start#}
                 <div class="list-group">
+                    <input v-model="searchQuery" type="text" placeholder="Search author"
+                                   class="form-control mb-5 mt-2">
 
-                    <div v-for="(book,index) in resultQuery" :key="index"
+
+                    <div v-if="resultQuery.length" v-for="(author,index) in resultQuery" :key="index"
                          class="list-group-item list-group-item-action flex-column align-items-start">
 
-                        <h5 v-text="book.name" class="cap-first"></h5>
-                        <div>
-                            <small v-if="book.author.length" v-for="(author,aindex) in book.author" :key="aindex"
-                                   class="pe-2 d-inline-block cap-first font-monospace" v-text="author"></small>
-                        </div>
-                        <div>
-                            <small v-if="book.category.length" v-for="(category,aindex) in book.category" :key="aindex"
-                                   class="pe-2 d-inline-block cap-first" v-text="category"></small>
-                        </div>
+                        <h5 v-text="author.name" class="cap-first"></h5>
+
+                        <small v-for="(book,aindex) in author.book" :key="aindex"
+                               class="pe-2 d-inline-block cap-first" v-text="book"></small>
 
 
                     </div>
+                    <div  v-else>
+                        <h5>No result. </h5>
+                    </div>
+
 
                 </div>
                 {#                vue end#}
@@ -75,7 +61,8 @@
                 {#                </div>#}
             </div>
             <div class="col-md-6 col-12">
-                <form action="{% url 'book:create' %}" method="post">
+                <h5>New author:</h5>
+                <form action="{% url 'book:author' %}" method="post">
                     {% csrf_token %}
                     {{ form | crispy }}
                     <button class="btn btn-primary">Add now</button>
@@ -93,33 +80,33 @@
             delimiters: ["[[", "]]"],
             data: {
                 message: 'Hello Vue!',
-                books: [],
+                authors: [],
                 filter_books: [],
                 searchQuery: '',
             },
             computed: {
                 resultQuery() {
                     if (this.searchQuery) {
-                        return this.books.filter((item) => {
+                        return this.authors.filter((item) => {
                             return this.searchQuery.toLowerCase().split(' ').every(v => item.name.toLowerCase().includes(v))
                         })
                     } else {
-                        return this.books;
+                        return this.authors;
                     }
                 }
             },
             created() {
-                fetch(`/book/all/`, {
+                fetch(`/book/author/`, {
                     method: 'get',
                     credentials: "same-origin",
                     headers: {
-                        "X-Requested-With": "XMLHttpRequest",
+                        "X-Requested-With" : "XMLHttpRequest",
                         "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
                     }
                 })
                     .then(res => res.json())
                     .then(data => {
-                        this.books = data;
+                        this.authors = data;
                     });
             }
         })

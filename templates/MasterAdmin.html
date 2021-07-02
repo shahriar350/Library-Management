@@ -13,8 +13,10 @@
     <!-- Favicon-->
     {#        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />#}
     <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="{% static 'css/common.min.css' %}" rel="stylesheet"/>
     <link href="{% static 'css/base.min.css' %}" rel="stylesheet"/>
     <script defer src="{% static 'js/alpine.min.js' %}"></script>
+    <script src="{% static 'js/vue.min.js' %}"></script>
     <script src="{% static 'js/feather.min.js' %}"></script>
 </head>
 <body>
@@ -35,15 +37,20 @@
                             Books
                         </button>
                     </h2>
-                    <div id="flush-collapseOne" class="accordion-collapse collapse {% if request.path == '/book/new/' or request.path == '/book/category/' %} show {% endif %}" aria-labelledby="flush-headingOne"
+                    <div id="flush-collapseOne"
+                         class="accordion-collapse collapse {% if request.path == '/book/new/' or request.path == '/book/category/' or request.path == '/book/author/' %} show {% endif %}"
+                         aria-labelledby="flush-headingOne"
                          data-bs-parent="#book_according">
                         <div class="accordion-body">
                             <a class="list-group-item list-group-item-action
             list-group-item-light p-3 {% if request.path == '/book/new/' %}active{% endif %} "
                                href="{% url 'book:create' %}">New book</a>
-                        <a class="list-group-item list-group-item-action
+                            <a class="list-group-item list-group-item-action
             list-group-item-light p-3 {% if request.path == '/book/category/' %}active{% endif %} "
                                href="{% url 'book:category' %}">Category</a>
+                            <a class="list-group-item list-group-item-action
+            list-group-item-light p-3 {% if request.path == '/book/author/' %}active{% endif %} "
+                               href="{% url 'book:author' %}">Author</a>
                         </div>
                     </div>
                 </div>
@@ -96,10 +103,13 @@
 </div>
 <!-- Bootstrap core JS-->
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+{#<script src="{% static 'js/axios.min.js' %}"></script>#}
 <!-- Core theme JS-->
 <script src="{% static 'js/sidebar.js' %}"></script>
+
+<script src="{% static 'js/script.js' %}"></script>
 <script>
-    feather.replace()
+
 </script>
 {% block js %}
 

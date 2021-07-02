@@ -10,13 +10,29 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-md-6 col-12">
+            <div class="col-md-6 col-12" id="category-container">
                 <h4>Book Category:</h4>
-                <ol class="list-group list-group-numbered">
-                    {% for category in categories %}
-                        <li class="list-group-item">{{ category | capfirst }}</li>
-                    {% endfor %}
-                </ol>
+                <div class="list-group">
+                    <input v-model="searchQuery" type="text" placeholder="Search category"
+                                   class="form-control mb-5 mt-2">
+
+                    <div  v-if="resultQuery.length === 0">
+                        <h5>No result. </h5>
+                    </div>
+                    <div  v-else v-for="(category,index) in resultQuery" :key="index"
+                         class="list-group-item list-group-item-action flex-column align-items-start">
+
+                        <h5 v-text="category.name" class="cap-first"></h5>
+
+{#                        <small v-for="(category,aindex) in book.category" :key="aindex"#}
+{#                               class="pe-2 d-inline-block cap-first" v-text="category"></small>#}
+
+
+                    </div>
+
+
+
+                </div>
 
 
             </div>
@@ -29,4 +45,46 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+
+{% block js %}
+    <script>
+        var app = new Vue({
+            el: '#category-container',
+            delimiters: ["[[", "]]"],
+            data: {
+                message: 'Hello Vue!',
+                categories: [],
+                filter_books: [],
+                searchQuery: '',
+            },
+            computed: {
+                resultQuery() {
+                    if (this.searchQuery) {
+                        return this.categories.filter((item) => {
+                            return this.searchQuery.toLowerCase().split(' ').every(v => item.name.toLowerCase().includes(v))
+                        })
+                    } else {
+                        return this.categories;
+                    }
+                }
+            },
+            created() {
+                fetch(`/book/category/`, {
+                    method: 'get',
+                    credentials: "same-origin",
+                    headers: {
+                        "X-Requested-With" : "XMLHttpRequest",
+                        "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+                    }
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        this.categories = data;
+                        console.log(this.categories)
+                    });
+            }
+        })
+    </script>
 {% endblock %}
