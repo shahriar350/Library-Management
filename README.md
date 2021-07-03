@@ -17,7 +17,6 @@ Feature:
 Technology:
  - Django
  - VueJs
- - Fetch api
  - Bootstrap
 
 This is very simple. You can develop by your own. Codes are maintainable and understandable. Thank you.
