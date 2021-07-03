@@ -7,33 +7,29 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container" id="books-container">
+    <div class="container" id="student-create-container">
         {% load crispy_forms_tags %}
         <div class="row">
             <div class="col-md-6 col-12">
                 <div class="row">
                     <div class="col-12 my-5">
-                        <input v-model="searchQuery" type="text" placeholder="Search book"
-                                   class="form-control">
+                        <input v-model="searchQuery" type="text" placeholder="Search student name or id"
+                               class="form-control">
 
                     </div>
                 </div>
                 <h4>Books:</h4>
                 {#                vue start#}
                 <div class="list-group">
-
-                    <div v-for="(book,index) in resultQuery" :key="index"
+                    <div v-if="resultQuery.length === 0">
+                        <h5>No data is available</h5>
+                    </div>
+                    <div v-else v-for="(student,index) in resultQuery" :key="index"
                          class="list-group-item list-group-item-action flex-column align-items-start">
 
-                        <h5 v-text="book.name" class="cap-first"></h5>
-                        <div>
-                            <small v-if="book.author.length" v-for="(author,aindex) in book.author" :key="aindex"
-                                   class="pe-2 d-inline-block cap-first font-monospace" v-text="author"></small>
-                        </div>
-                        <div>
-                            <small v-if="book.category.length" v-for="(category,aindex) in book.category" :key="aindex"
-                                   class="pe-2 d-inline-block cap-first" v-text="category"></small>
-                        </div>
+                        <h5 v-text="student.name" class="cap-first"></h5>
+                        <small v-text="student.student_id"></small>
+
 
 
                     </div>
@@ -68,7 +64,7 @@
                 {#                </div>#}
             </div>
             <div class="col-md-6 col-12">
-                <form action="{% url 'book:create' %}" method="post">
+                <form action="{% url 'student:create' %}" method="post">
                     {% csrf_token %}
                     {{ form | crispy }}
                     <button class="btn btn-primary">Add now</button>
@@ -82,27 +78,34 @@
 {% block js %}
     <script>
         var app = new Vue({
-            el: '#books-container',
+            el: '#student-create-container',
             delimiters: ["[[", "]]"],
             data: {
                 message: 'Hello Vue!',
-                books: [],
+                students: [],
                 filter_books: [],
                 searchQuery: '',
+                searchQueryId: '',
             },
             computed: {
                 resultQuery() {
                     if (this.searchQuery) {
-                        return this.books.filter((item) => {
-                            return this.searchQuery.toLowerCase().split(' ').every(v => item.name.toLowerCase().includes(v))
+                        return this.students.filter((item) => {
+                            if (!isNaN(Number(this.searchQuery))) {
+                                return String(this.searchQuery).split(' ').every(v => String(item.student_id).includes(v))
+                                {#return String(this.searchQuery).every(v => String(item.student_id).includes(v))#}
+                            } else {
+                                return this.searchQuery.toLowerCase().split(' ').every(v => item.name.toLowerCase().includes(v))
+                            }
+
                         })
                     } else {
-                        return this.books;
+                        return this.students;
                     }
                 }
             },
             created() {
-                fetch(`/book/all/`, {
+                fetch(`/student/create/`, {
                     method: 'get',
                     credentials: "same-origin",
                     headers: {
@@ -112,29 +115,10 @@
                 })
                     .then(res => res.json())
                     .then(data => {
-                        this.books = data;
+                        this.students = data;
                     });
             }
         })
     </script>
-    {#        <script>#}
-    {#            document.addEventListener('alpine:init', () => {#}
-    {#                Alpine.data('book_data', () => ({#}
-    {#                    books: '',#}
-    {##}
-    {#                    all_books() {#}
-    {#                        fetch(`/book/all/`, {#}
-    {#                            method: 'get',#}
-    {#                            credentials: "same-origin",#}
-    {#                        })#}
-    {#                            .then(res => res.json())#}
-    {#                            .then(data => {#}
-    {#                                this.books = data#}
-    {#                                console.log(this.books)#}
-    {#                            });#}
-    {#                    }#}
-    {#                }))#}
-    {#            })#}
-    {##}
-    {#        </script>#}
+
 {% endblock %}

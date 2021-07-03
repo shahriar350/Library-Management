@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'auth_app.apps.AuthAppConfig',
     'frontend_app.apps.FrontendAppConfig',
     'book_app.apps.BookAppConfig',
+    'student_app.apps.StudentAppConfig'
 ]
 
 MIDDLEWARE = [
